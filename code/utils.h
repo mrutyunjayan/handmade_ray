@@ -5,46 +5,48 @@
 
 #include <stdint.h>
 #include <stddef.h>
-// TODO(Jai): implement math ourselves
+#include <float.h>
 #include <math.h>
 
-#define localPersist static
-#define global static
-#define internal static
-#define false 0
-#define true 1
-#define readOnly const
+#define localPersist   static
+#define global         static
+#define internal       static
+#define false          0
+#define true           1
+#define readOnly       const
 
-#define PI 3.14159265359f
+#define PI             3.14159265359f
 
-typedef int8_t s8;
-typedef int16_t s16;
-typedef int32_t s32;
-typedef int64_t s64;
+typedef int8_t         s8;
+typedef int16_t        s16;
+typedef int32_t        s32;
+typedef int64_t        s64;
 
-typedef uint8_t u8;
-typedef uint16_t u16;
-typedef uint32_t u32;
-typedef uint64_t u64;
+typedef uint8_t        u8;
+typedef uint16_t       u16;
+typedef uint32_t       u32;
+typedef uint64_t       u64;
 
-typedef s32 b32;
-typedef unsigned int uint;
+typedef s32           b32;
+typedef unsigned int  uint;
 
 typedef float f32;
 typedef double f64;
 
 #define U32_MAX        0xFFFFFFFF
 #define U64_MAX        0xFFFFFFFFFFFFFFFF
+#define F32_MAX        FLT_MAX
+#define F32_MIN        -FLT_MAX
 
 // NOTE(Jai): Recursive type definition only for 
 // editor syntax highlighting
-typedef size_t size_t;
-typedef size_t memoryIndex;
+typedef size_t          size_t;
+typedef size_t          memoryIndex;
 
-#define KB(value) (value * 1024LL)
-#define MB(value) (KB(value) * 1024LL)
-#define GB(value) (MB(value) * 1024LL)
-#define TB(value) (GB(value) * 1024LL)
+#define KB(value)       (value * 1024LL)
+#define MB(value)       (KB(value) * 1024LL)
+#define GB(value)       (MB(value) * 1024LL)
+#define TB(value)       (GB(value) * 1024LL)
 
 #define ARRAY_COUNT(array) (sizeof(array) / sizeof(array[0]))
 
@@ -63,6 +65,14 @@ if (!(expression)) { \
 
 #define CLAMP(value, min, max) (value <= min) ? min : (value >= max) ? max : value;
 
+
+//~-------------Swap ----------------------
+#define SWAP(a, b) do { \
+u8 swapTemp[(sizeof(a) == sizeof(b)) ? sizeof(a) : -1]; \
+memcpy(swapTemp, &a, sizeof(a)); \
+memcpy(&a, &b, sizeof(a)); \
+memcpy(&b, swapTemp, sizeof(a)); \
+} while(0)
 
 //*************************************************************************
 // ------------------STRING STUFF------------------------------------------
@@ -151,6 +161,18 @@ inline internal f32
 handmade_atan(f32 value) {
     return atanf(value);
 }
+
+//~ ARGB TO HEX
+#define RGB(red, green, blue) \
+(u32)(red  << 16 \
+| green << 8 \
+| blue << 0)
+
+#define ARGB(alpha, red, green, blue) \
+(u32)(alpha << 24 \
+| red << 16 \
+| green << 8 \
+| blue << 0)
 
 //*************************************************************************
 // ------------------ARENA STUFF------------------------------------------

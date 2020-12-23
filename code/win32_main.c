@@ -1,35 +1,10 @@
 #include "utils.h"
 #include "win32_main.h"
 
+#include "ray.h"
+
 #include <stdio.h>
 #include <windows.h>
-
-#pragma pack(push, 1)
-typedef struct BitmapHeader {
-    u16 fileType;
-    u32 fileSize;
-    u16 reserved1;
-    u16 reserved2;
-    u32 bitmapOffset;
-    u32 size;
-    s32 width;
-    s32 height;
-    u16 planes;
-    u16 bitsPerPixel;
-    u32 compression;
-    u32 sizeOfBitmap;
-    s32 horizontalResolution;
-    s32 veritcalResolution;
-    u32 coloursUsed;
-    u32 coloursImportant;
-} BitmapHeader;
-#pragma pack(pop)
-
-typedef struct ImageU32 {
-    u32 width;
-    u32 height;
-    u32* pixels;
-} ImageU32;
 
 internal u32
 pixel_getTotalSize(ImageU32 image) {
@@ -135,11 +110,25 @@ main(int argCount, char** args) {
     for (u32 y = 0; y < image.height; ++y) {
         for (u32 x = 0; x < image.width; ++x) {
             
-            *out++ = (y < 32) ? 0xFFFF0000 : 0xFF0000FF;
+            *out++ = (y < 32) ? ARGB(255, 0, 0, 255) : ARGB(255, 255, 0, 0);
         }
     }
     
     image_write(image, "test.bmp");
+    
+    Material materials[2]  = {0};
+    materials[0].colour = (Colour){ 0, 0, 0 };
+    materials[1].colour = (Colour){ 1, 0, 0 };
+    Plane plane = {0};
+    
+    World world = {
+        .materialCount = 2,
+        .materials = materials,
+        .planeCount = 1,
+        .planes = &plane,
+        .sphereCount = 0,
+        .spheres = NULL
+    };
     
     return 0;
 }
